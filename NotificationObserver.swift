@@ -37,7 +37,7 @@ extension NotificationObserver {
     
     func unregister(from name: String, object: AnyObject? = nil) {
         let key = keyFor(name: name, object: object)
-        print("Unregister from notifications - \(key)")
+        log("Unregister from notifications - \(key)")
         
         if object != nil, let observer = observersCache.removeValue(forKey: key) {
             NotificationCenter.default.removeObserver(observer)
@@ -52,19 +52,17 @@ extension NotificationObserver {
         observersCache.keys
             .filter { $0.hasPrefix(key) }
             .forEach {
-                if let observer = observersCache.removeValue(forKey: $0) {
-                    nc.removeObserver(observer)
-                }
+                observersCache
+                    .removeValue(forKey: $0)
+                    .map(nc.removeObserver)
         }
     }
     
     private func registerObserver(_ observer: NSObjectProtocol, forName name: String, object: AnyObject? = nil) {
         let key = keyFor(name: name, object: object)
-        print("Register for notifications - \(key)")
+        log("Register for notifications - \(key)")
         
-        if let oldObserver = observersCache[key] {
-            NotificationCenter.default.removeObserver(oldObserver)
-        }
+        observersCache[key].map(NotificationCenter.default.removeObserver)
         observersCache[key] = observer
     }
     
@@ -75,7 +73,14 @@ extension NotificationObserver {
             let objectPointer = unsafeBitCast(obj, to: Int.self)
             return name + String(myPointer) + String(objectPointer)
         }
+        
         return name + String(myPointer)
+    }
+    
+    private func log(_ message: String) {
+        #if DEBUG
+            print(message)
+        #endif
     }
 }
 
@@ -91,3 +96,4 @@ extension NotificationCenter {
         NotificationCenter.postNotification(name: T.name, notification: notification)
     }
 }
+
