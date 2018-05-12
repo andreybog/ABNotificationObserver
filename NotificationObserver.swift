@@ -1,9 +1,9 @@
 //
 //  NotificationObserver.swift
-//  HiveOnline
+//  
 //
 //  Created by Andrey Bogushev on 8/31/17.
-//  Copyright © 2017 Seductive. All rights reserved.
+//  Copyright © 2017 4IRE Labs. All rights reserved.
 //
 
 import Foundation
